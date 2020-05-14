@@ -49,7 +49,7 @@ class GameConstants:
     FOLDER_IMAGES = 'images'
     FOLDER_SOUNDS = 'sounds'
 
-    IMAGE_FIELD = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'field1.png')
+    IMAGE_FIELD = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'field.png')
     IMAGE_PADDLE = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'paddle.png')
     IMAGE_PUCK = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'puck.png')
 
