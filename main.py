@@ -1,15 +1,10 @@
-from common import GameUtils, GameConfig
-from init import init_game
-from update import update_game
-from render import render_game
-
-
-@GameUtils.game_loop(framerate=GameConfig.FRAMERATE, required_framerate=GameConfig.REQUIRED_FRAMERATE)
-def air_hockey_game(*args, **kwargs):
-    update_game(*args, **kwargs)
-    render_game(*args, **kwargs)
-
+from airhockey import AirHockeyGame
 
 if __name__ == '__main__':
-    init_game()
-    air_hockey_game()
+    # Initialize the game
+    air_hockey_game = AirHockeyGame()
+    # Start the game
+    air_hockey_game.play_game()
+    # Quitting the game
+    air_hockey_game.quit_game()
+    exit()

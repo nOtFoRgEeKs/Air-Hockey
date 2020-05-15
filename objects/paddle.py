@@ -1,19 +1,21 @@
 from typing import Union
 
 import pygame
-from common import ObjectsLibrary, ObjectId, PlayerType
+
+from assets import AssetManager
+from common import PlayerType, AssetId
 from inputmanager import BaseInput, MouseInput, AIInput, NetworkInput
 from libs import Point, Vector2D
 
 
 class Paddle(pygame.sprite.Sprite):
-    def __init__(self, *groups, start_center_location: Point,
+    def __init__(self, *groups, start_location: Point,
                  input_manager: Union[BaseInput, MouseInput, AIInput, NetworkInput],
                  paddle_bound: pygame.Rect, player_type: PlayerType):
         super().__init__(*groups)
-        self.image: pygame.Surface = ObjectsLibrary.get_object(ObjectId.IMAGE_PADDLE)
+        self.image: pygame.Surface = AssetManager.get_asset(AssetId.IMAGE_PADDLE)
         self.rect: pygame.Rect = self.image.get_rect()
-        self.rect.centerx, self.rect.centery = start_center_location.value
+        self.rect.centerx, self.rect.centery = start_location.value
         self.radius: int = self.rect.centerx - self.rect.x
 
         self.velocity = Vector2D()

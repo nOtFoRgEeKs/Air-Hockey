@@ -3,17 +3,18 @@ from typing import List
 
 import pygame
 
-from assets import Paddle
-from common import ObjectsLibrary, ObjectId, GameConfig, GameClock
+from assets import AssetManager
+from common import GameConfig, GameClock, AssetId
 from libs import Point, Vector2D
+from objects import Paddle
 
 
 class Puck(pygame.sprite.Sprite):
-    def __init__(self, *groups, start_center_location: Point):
+    def __init__(self, *groups, start_location: Point):
         super().__init__(*groups)
-        self.image: pygame.Surface = ObjectsLibrary.get_object(ObjectId.IMAGE_PUCK)
+        self.image: pygame.Surface = AssetManager.get_asset(AssetId.IMAGE_PUCK)
         self.rect: pygame.Rect = self.image.get_rect()
-        self.rect.centerx, self.rect.centery = start_center_location.value
+        self.rect.centerx, self.rect.centery = start_location.value
         self.radius: int = int(math.ceil(self.rect.width / 2))
 
         self.velocity = Vector2D(0.0, 0.0)
@@ -27,8 +28,7 @@ class Puck(pygame.sprite.Sprite):
         self.rect.centerx, self.rect.centery = new_center.value
 
     def update(self, *args):
-
-        paddle_grp: pygame.sprite.Group = ObjectsLibrary.get_object(ObjectId.PADDLE_GROUP)
+        paddle_grp: pygame.sprite.Group = args[0]
 
         collided_paddle_list: List[Paddle] = pygame.sprite.spritecollide(self, paddle_grp, False,
                                                                          pygame.sprite.collide_circle)
@@ -40,13 +40,15 @@ class Puck(pygame.sprite.Sprite):
             parallel_vel_puck, perpendicular_vel_puck = self.velocity.decompose(vector_puck_to_paddle)
             parallel_vel_paddle: Vector2D = collided_paddle.velocity.decompose(vector_paddle_to_puck)[0]
 
-            parallel_vel_puck = (-parallel_vel_puck) * GameConfig.COLLISION_COEFFICIENT + parallel_vel_paddle * GameConfig.PADDLE_MASS / GameConfig.PUCK_MASS
+            parallel_vel_puck = ((-parallel_vel_puck) * GameConfig.COLLISION_COEFFICIENT
+                                 + parallel_vel_paddle * GameConfig.PADDLE_MASS / GameConfig.PUCK_MASS)
             self.velocity = parallel_vel_puck + perpendicular_vel_puck
 
             if self.velocity.len > GameConfig.PUCK_MAX_SPEED:
                 self.velocity = self.velocity.normalized * GameConfig.PUCK_MAX_SPEED
 
-            _offset = self.radius + collided_paddle.radius - vector_puck_to_paddle.len + GameConfig.PUCK_PADDLE_STICKING_OFFSET
+            _offset = (self.radius + collided_paddle.radius
+                       - vector_puck_to_paddle.len + GameConfig.PUCK_PADDLE_STICKING_OFFSET)
             _offset_vec = self.velocity.normalized * _offset
             self.rect.centerx += _offset_vec.x
             self.rect.centery += _offset_vec.y

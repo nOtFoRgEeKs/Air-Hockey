@@ -1,5 +1,6 @@
 import os
 from enum import Enum, auto
+
 import pygame
 
 from libs import Point, Dimension
@@ -64,20 +65,12 @@ class GameConstants:
     FOLDER_IMAGES = 'images'
     FOLDER_SOUNDS = 'sounds'
 
-    IMAGE_FIELD = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'field.png')
-    IMAGE_PADDLE = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'paddle.png')
-    IMAGE_PUCK = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'puck.png')
+    PATH_IMAGE_FIELD = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'field.png')
+    PATH_IMAGE_PADDLE = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'paddle.png')
+    PATH_IMAGE_PUCK = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'puck.png')
 
 
-class ObjectId(Enum):
-    WINDOW = auto()
-
-    PADDLE_USER = auto()
-    PADDLE_OPPONENT = auto()
-    PADDLE_GROUP = auto()
-    PUCK = auto()
-    PUCK_GROUP = auto()
-
+class AssetId(Enum):
     IMAGE_FIELD = auto()
     IMAGE_PADDLE = auto()
     IMAGE_PUCK = auto()
@@ -86,3 +79,10 @@ class ObjectId(Enum):
 class PlayerType(Enum):
     USER = auto()
     OPPONENT = auto()
+
+
+class GameStateId(Enum):
+    START_PAGE = auto()
+    IN_GAME = auto()
+    PAUSE_PAGE = auto()
+    WAITING_PLAYER = auto()

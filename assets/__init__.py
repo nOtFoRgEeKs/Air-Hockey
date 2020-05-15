@@ -1,2 +1,1 @@
-from .paddle import Paddle
-from .puck import Puck
+from .assetmanager import AssetManager

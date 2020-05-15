@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+
 import pygame
 
 from common import GameClock, GameUtils, GameConfig

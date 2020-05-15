@@ -1,4 +1,5 @@
 from typing import Callable, Union, Tuple
+
 import pygame
 
 from libs import Point, Dimension
@@ -20,8 +21,6 @@ class GameUtils:
                             is_running = False
                     if _delta_time * required_framerate <= 1000:
                         func(*args, **kwargs)
-                pygame.quit()
-                exit()
 
             return wrapper
 
@@ -40,8 +39,8 @@ class GameUtils:
                     exit()
 
     @staticmethod
-    def inverted_point(point: Union[Point, Tuple[int, int]], origin: Point, dimension: Dimension) -> Union[
-                        Point, Tuple[int, int]]:
+    def inverted_point(point: Union[Point, Tuple[int, int]],
+                       origin: Point, dimension: Dimension) -> Union[Point, Tuple[int, int]]:
         if type(point) is tuple:
             _inverted_point_x = dimension.width - (point[0] - origin.x) + origin.x
             _inverted_point_y = dimension.height - (point[1] - origin.y) + origin.y
@@ -51,24 +50,3 @@ class GameUtils:
             _inverted_point.x = dimension.width - (point.x - origin.x) + origin.x
             _inverted_point.y = dimension.height - (point.y - origin.y) + origin.y
             return _inverted_point
-
-
-class ObjectsLibrary:
-    _objects_dict: dict = dict()
-
-    @staticmethod
-    def get_object(object_id):
-        if object_id in ObjectsLibrary._objects_dict.keys():
-            return ObjectsLibrary._objects_dict[object_id]
-
-    @staticmethod
-    def set_object(object_id, game_object):
-        if object_id not in ObjectsLibrary._objects_dict.keys():
-            ObjectsLibrary._objects_dict[object_id] = game_object
-
-    @staticmethod
-    def del_object(object_id):
-        if object_id in ObjectsLibrary._objects_dict.keys():
-            game_object = ObjectsLibrary._objects_dict[object_id]
-            del ObjectsLibrary._objects_dict[object_id]
-            del game_object
