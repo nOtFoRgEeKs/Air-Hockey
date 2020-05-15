@@ -35,11 +35,25 @@ class Point:
     def len(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
 
-    def __add__(self, other: Point) -> Point:
-        return Point((self.x + other.x, self.y + other.y))
+    def __add__(self, other: Union[Point, Tuple[int, int], int]) -> Point:
+        if type(other) is Point:
+            return Point((self.x + other.x, self.y + other.y))
+        elif type(other) is tuple:
+            return Point((self.x + other[0], self.y + other[1]))
+        elif type(other) is int:
+            return Point((self.x + other, self.y + other))
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
-    def __sub__(self, other: Point) -> Point:
-        return Point((self.x - other.x, self.y - other.y))
+    def __sub__(self, other: Union[Point, Tuple[int, int], int]) -> Point:
+        if type(other) is Point:
+            return Point((self.x - other.x, self.y - other.y))
+        elif type(other) is tuple:
+            return Point((self.x - other[0], self.y - other[1]))
+        elif type(other) is int:
+            return Point((self.x - other, self.y - other))
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
 
 class Dimension:
@@ -72,11 +86,28 @@ class Dimension:
     def __str__(self) -> str:
         return 'Dimension({0}, {1})'.format(self.width, self.height)
 
+    def __add__(self, other: Union[Tuple[int, int], int]) -> Dimension:
+        if type(other) is tuple:
+            return Dimension(self.width + other[0], self.height + other[1])
+        elif type(other) is int:
+            return Dimension(self.width + other, self.height + other)
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
+
+    def __sub__(self, other: Union[Tuple[int, int], int]) -> Dimension:
+        if type(other) is tuple:
+            return Dimension(self.width - other[0], self.height - other[1])
+        elif type(other) is int:
+            return Dimension(self.width - other, self.height - other)
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
+
 
 class Vector2D:
     """
     Class to represent 2-dimensional vector and related operations
     """
+
     @dispatch(tuple)
     def __init__(self, vector_tuple: Tuple[float, float]):
         self.x: float = vector_tuple[0]
@@ -129,27 +160,53 @@ class Vector2D:
     def __neg__(self) -> Vector2D:
         return Vector2D((-self.x, -self.y))
 
-    def __add__(self, other: Vector2D) -> Vector2D:
-        return Vector2D((self.x + other.x, self.y + other.y))
+    def __add__(self, other: Union[Vector2D, Tuple[float, float]]) -> Vector2D:
+        if type(other) is Vector2D:
+            return Vector2D((self.x + other.x, self.y + other.y))
+        elif type(other) is tuple:
+            return Vector2D((self.x + other[0], self.y + other[1]))
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
-    def __iadd__(self, other: Vector2D) -> Vector2D:
-        self.x += other.x
-        self.y += other.y
-        return self
+    def __iadd__(self, other: Union[Vector2D, Tuple[float, float]]) -> Vector2D:
+        if type(other) is Vector2D:
+            self.x += other.x
+            self.y += other.y
+            return self
+        elif type(other) is tuple:
+            self.x += other[0]
+            self.y += other[1]
+            return self
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
-    def __sub__(self, other: Vector2D) -> Vector2D:
-        return Vector2D((self.x - other.x, self.y - other.y))
+    def __sub__(self, other: Union[Vector2D, Tuple[float, float]]) -> Vector2D:
+        if type(other) is Vector2D:
+            return Vector2D((self.x - other.x, self.y - other.y))
+        elif type(other) is tuple:
+            return Vector2D((self.x - other[0], self.y - other[1]))
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
-    def __isub__(self, other: Vector2D) -> Vector2D:
-        self.x -= other.x
-        self.y -= other.y
-        return self
+    def __isub__(self, other: Union[Vector2D, Tuple[float, float]]) -> Vector2D:
+        if type(other) is Vector2D:
+            self.x -= other.x
+            self.y -= other.y
+            return self
+        elif type(other) is tuple:
+            self.x -= other[0]
+            self.y -= other[1]
+            return self
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(other)))
 
     def __mul__(self, operand: Union[int, float, Vector2D]) -> Union[Vector2D, float]:
         if type(operand) is int or type(operand) is float:
             return Vector2D((self.x * operand, self.y * operand))
-        else:
+        elif type(operand) is Vector2D:
             return self.x * operand.x + self.y * operand.y
+        else:
+            raise TypeError('Unsupported operand type: ' + str(type(operand)))
 
     def __imul__(self, scalar: Union[int, float]) -> Vector2D:
         self.x *= scalar
@@ -187,7 +244,7 @@ class Vector2D:
     def decompose(self, direction: Vector2D) -> Tuple[Vector2D, Vector2D]:
         _unit_direction = direction.normalized
 
-        parallel_component = _unit_direction.__mul__(self * _unit_direction)
+        parallel_component = _unit_direction.__mul__(self.__mul__(_unit_direction))
         perpendicular_component = self.__sub__(parallel_component)
 
         return parallel_component, perpendicular_component

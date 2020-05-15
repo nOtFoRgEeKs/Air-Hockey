@@ -40,41 +40,39 @@ class Puck(pygame.sprite.Sprite):
             parallel_vel_puck, perpendicular_vel_puck = self.velocity.decompose(vector_puck_to_paddle)
             parallel_vel_paddle: Vector2D = collided_paddle.velocity.decompose(vector_paddle_to_puck)[0]
 
-            parallel_vel_puck = (-parallel_vel_puck) * 0.8 + parallel_vel_paddle * 1.5
+            parallel_vel_puck = (-parallel_vel_puck) * GameConfig.COLLISION_COEFFICIENT + parallel_vel_paddle * GameConfig.PADDLE_MASS / GameConfig.PUCK_MASS
             self.velocity = parallel_vel_puck + perpendicular_vel_puck
 
             if self.velocity.len > GameConfig.PUCK_MAX_SPEED:
                 self.velocity = self.velocity.normalized * GameConfig.PUCK_MAX_SPEED
 
-            _offset = self.radius + collided_paddle.radius - vector_puck_to_paddle.len + 2
+            _offset = self.radius + collided_paddle.radius - vector_puck_to_paddle.len + GameConfig.PUCK_PADDLE_STICKING_OFFSET
             _offset_vec = self.velocity.normalized * _offset
             self.rect.centerx += _offset_vec.x
             self.rect.centery += _offset_vec.y
 
         # Check for field bound and goal
-        if self.rect.centerx <= GameConfig.FIELD_BOUND.left:
+        if self.rect.centerx <= GameConfig.PUCK_BOUND.left + self.radius:
             self.velocity.x = -self.velocity.x
-            self.rect.centerx = GameConfig.FIELD_BOUND.left
-        elif self.rect.centerx >= GameConfig.FIELD_BOUND.right:
+            self.rect.centerx = GameConfig.PUCK_BOUND.left + self.radius
+        elif self.rect.centerx >= GameConfig.PUCK_BOUND.right - self.radius:
             self.velocity.x = -self.velocity.x
-            self.rect.centerx = GameConfig.FIELD_BOUND.right
+            self.rect.centerx = GameConfig.PUCK_BOUND.right - self.radius
 
-        if self.rect.centery <= GameConfig.FIELD_BOUND.top:
+        if self.rect.centery <= GameConfig.PUCK_BOUND.top + self.radius:
             self.velocity.y = -self.velocity.y
-            self.rect.centery = GameConfig.FIELD_BOUND.top
+            self.rect.centery = GameConfig.PUCK_BOUND.top + self.radius
             # if GameConfig.GOAL_X_RANGE[0] < self.rect.centerx < GameConfig.GOAL_X_RANGE[1]:
             #     print('Goal Player')
             # else:
             #     self.velocity.y = -self.velocity.y
-        elif self.rect.centery >= GameConfig.FIELD_BOUND.bottom:
+        elif self.rect.centery >= GameConfig.PUCK_BOUND.bottom - self.radius:
             self.velocity.y = -self.velocity.y
-            self.rect.centery = GameConfig.FIELD_BOUND.bottom
+            self.rect.centery = GameConfig.PUCK_BOUND.bottom - self.radius
             # if GameConfig.GOAL_X_RANGE[0] < self.rect.centerx < GameConfig.GOAL_X_RANGE[1]:
             #     print('Goal Opponent')
             # else:
             #     self.velocity.y = -self.velocity.y
-
-        print(self.velocity.len)
 
         _displacement: Vector2D = self.velocity * GameClock.get_time()
         if _displacement.len < 0.5:

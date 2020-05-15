@@ -35,18 +35,18 @@ class Paddle(pygame.sprite.Sprite):
             _pos = self.input.get_position()
             _vel = self.input.get_velocity()
 
-            if _pos.x < self._bound.left:
-                _pos.x = self._bound.left
+            if _pos.x < self._bound.left + self.radius:
+                _pos.x = self._bound.left + self.radius
                 _vel.x = 0
-            elif _pos.x > self._bound.right:
-                _pos.x = self._bound.right
+            elif _pos.x > self._bound.right - self.radius:
+                _pos.x = self._bound.right - self.radius
                 _vel.x = 0
 
-            if _pos.y < self._bound.top:
-                _pos.y = self._bound.top
+            if _pos.y < self._bound.top + self.radius:
+                _pos.y = self._bound.top + self.radius
                 _vel.y = 0
-            elif _pos.y > self._bound.bottom:
-                _pos.y = self._bound.bottom
+            elif _pos.y > self._bound.bottom - self.radius:
+                _pos.y = self._bound.bottom - self.radius
                 _vel.y = 0
 
             self.rect.centerx, self.rect.centery = _pos.value
