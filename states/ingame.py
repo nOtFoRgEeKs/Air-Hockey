@@ -1,13 +1,13 @@
 import pygame
 
 from assets import AssetManager
-from common import GameStateId, GameConfig, PlayerType, AssetId
+from common import GameStateId, GameConfig, PlayerType, AssetId, GameColor
 from inputmanager import MouseInput, AIInput
 from objects import Paddle, Puck
-from states import BaseGameState, GamePlay
+from states import AbstractGameState, GamePlay
 
 
-class InGame(BaseGameState):
+class InGame(AbstractGameState):
     def __init__(self):
         super().__init__()
 
@@ -47,7 +47,8 @@ class InGame(BaseGameState):
         self._puck_grp.update(self._paddle_grp)
 
     def render(self, *args, **kwargs):
-        window = kwargs.get('game_window')
+        window: pygame.Surface = kwargs.get('game_window')
+        window.fill(GameColor.GRAY_20)
         window.blit(self._field_image, GameConfig.FIELD_LOCATION.value)
 
         self._paddle_grp.draw(window)

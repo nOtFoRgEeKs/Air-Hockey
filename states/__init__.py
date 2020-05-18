@@ -1,4 +1,4 @@
-from .basestate import BaseGameState
-from .basestate import GamePlay
+from .abstractstate import AbstractGameState
+from .abstractstate import GamePlay
 from .ingame import InGame
-from .startingpage import StartingPage
+from .startingmenu import StartingMenu

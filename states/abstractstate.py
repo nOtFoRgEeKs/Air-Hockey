@@ -4,17 +4,19 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict
 
 from common import GameStateId
+from ui import UIManager
 
 
 class GamePlay:
     CURRENT_STATE: GameStateId = None
-    STATE_POOL: Dict[GameStateId, BaseGameState] = dict()
+    STATE_POOL: Dict[GameStateId, AbstractGameState] = dict()
 
 
-class BaseGameState(metaclass=ABCMeta):
+class AbstractGameState(metaclass=ABCMeta):
 
     def __init__(self):
         self.is_running = False
+        self._ui_manager = UIManager()
 
     @abstractmethod
     def start(self, *args, **kwargs):
