@@ -1,7 +1,7 @@
 import pygame
 
 from assets import AssetManager
-from common import GameConfig, GameUtils, AssetId, GameConstants, GameStateId
+from common import GameConfig, GameUtils, AssetId, GameConstants, GameStateId, GameClock
 from inputmanager import MouseInput
 from libs import SingletonMeta
 from states import GamePlay, StartingMenu, InGame
@@ -38,6 +38,8 @@ class AirHockeyGame(metaclass=SingletonMeta):
     @GameUtils.game_loop(framerate=GameConfig.FRAMERATE, required_framerate=GameConfig.REQUIRED_FRAMERATE)
     def play_game(self, *args, **kwargs):
         kwargs['game_window'] = self._game_window
+
+        print('Framerate: ', GameClock.get_fps())
 
         GamePlay.ACTIVE_STATE.update(*args, **kwargs)
         GamePlay.ACTIVE_STATE.render(*args, **kwargs)
