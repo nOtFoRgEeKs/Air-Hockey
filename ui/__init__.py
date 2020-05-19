@@ -1,4 +1,3 @@
-from .uihelper import EventHandler, UIManager
+from .button import Button, ToggleButton
 from .label import Label
-from .button import ToggleButton
-
+from .uihelper import EventHandler, UIManager

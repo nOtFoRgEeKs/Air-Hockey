@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import Dict
+from collections import deque
+from typing import Dict, Optional
 
 from common import GameStateId
 from ui import UIManager
 
 
 class GamePlay:
-    CURRENT_STATE: GameStateId = None
+    ACTIVE_STATE: Optional[AbstractGameState] = None
+    PAUSED_STATE_STACK = deque()
     STATE_POOL: Dict[GameStateId, AbstractGameState] = dict()
 
 
 class AbstractGameState(metaclass=ABCMeta):
 
     def __init__(self):
-        self.is_running = False
         self._ui_manager = UIManager()
 
     @abstractmethod

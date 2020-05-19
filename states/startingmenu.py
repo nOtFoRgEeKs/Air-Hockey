@@ -1,10 +1,9 @@
 import pygame
 
 from assets import AssetManager
-from common import GameStateId, AssetId, GameConfig, GameColor
-from libs import Point
+from common import AssetId, GameConfig, GameColor, GameEvents
 from states import AbstractGameState, GamePlay
-from ui import Label, ToggleButton
+from ui import Label, ToggleButton, Button
 
 
 class StartingMenu(AbstractGameState):
@@ -15,16 +14,15 @@ class StartingMenu(AbstractGameState):
         self._labels_grp = pygame.sprite.Group()
         self._buttons_grp = pygame.sprite.Group()
 
-        self._generate_screen()
-
     def start(self, *args, **kwargs):
-        GamePlay.CURRENT_STATE = GameStateId.START_MENU
+        self._generate_screen()
+        GamePlay.ACTIVE_STATE = self
 
     def pause(self, *args, **kwargs):
-        pass
+        GamePlay.PAUSED_STATE_STACK.append(self)
 
     def resume(self, *args, **kwargs):
-        pass
+        GamePlay.ACTIVE_STATE = self
 
     def update(self, *args, **kwargs):
         self._ui_manager.update(*args, **kwargs)
@@ -35,28 +33,86 @@ class StartingMenu(AbstractGameState):
         self._labels_grp.draw(window)
         self._buttons_grp.draw(window)
 
+        # s = pygame.Surface((455, 650))
+        # s.set_alpha(128)
+        # s.fill((0,0,200))
+        # window.blit(s, (0,0))
+
     def stop(self, *args, **kwargs):
-        pass
+        self._ui_manager.clear()
+        self._labels_grp.empty()
+        self._buttons_grp.empty()
 
     def _generate_screen(self):
-        _game_logo = Label(self._labels_grp, text=GameConfig.GAME_LOGO_TEXT, color=GameConfig.GAME_LOGO_COLOR,
-                           font=AssetManager.get_asset(AssetId.FONT_LOGO), center=GameConfig.GAME_LOGO_CENTER)
+        # Creating game logo as colored text label
+        game_logo = Label(self._labels_grp, text=GameConfig.GAME_LOGO_TEXT, color=GameConfig.GAME_LOGO_COLOR,
+                          font=AssetManager.get_asset(AssetId.FONT_LOGO), center=GameConfig.GAME_LOGO_CENTER)
 
-        _font_menu_default: pygame.font.Font = AssetManager.get_asset(AssetId.FONT_MENU_DEFAULT)
-        _font_menu_focused: pygame.font.Font = AssetManager.get_asset(AssetId.FONT_MENU_FOCUSED)
+        # Creating start menu entries
+        # Getting fonts for menu entries
+        font_menu_default: pygame.font.Font = AssetManager.get_asset(AssetId.FONT_MENU_DEFAULT)
+        font_menu_focused: pygame.font.Font = AssetManager.get_asset(AssetId.FONT_MENU_FOCUSED)
 
-        _sound_on_default = _font_menu_default.render('Music:  on', True, (0, 0, 0)).convert_alpha()
-        _sound_on_focused = _font_menu_focused.render('Music:  on', True, (0, 0, 0)).convert_alpha()
-        _sound_off_default = _font_menu_default.render('Music: off', True, (0, 0, 0)).convert_alpha()
-        _sound_off_focused = _font_menu_focused.render('Music: off', True, (0, 0, 0)).convert_alpha()
+        # Entry: Single player match
+        single_play_default = font_menu_default.render(GameConfig.START_MENU_OPTION_1_TEXT, True,
+                                                       GameConfig.START_MENU_COLOR).convert_alpha()
+        single_play_focused = font_menu_focused.render(GameConfig.START_MENU_OPTION_1_TEXT, True,
+                                                       GameConfig.START_MENU_COLOR).convert_alpha()
+        single_play_button = Button(self._buttons_grp, img=single_play_default,
+                                    focused_img=single_play_focused,
+                                    center=GameConfig.START_MENU_OPTION_1_CENTER)
+        single_play_button.on_mouse_click += self._click_callback_single_match
 
-        _sound_button = ToggleButton(self._buttons_grp, default_img=_sound_on_default,
-                                     default_focused_img=_sound_on_focused, toggled_img=_sound_off_default,
-                                     toggled_focused_img=_sound_off_focused, center=Point(200, 400))
+        # Entry: Online match
+        online_play_default = font_menu_default.render(GameConfig.START_MENU_OPTION_2_TEXT, True,
+                                                       GameConfig.START_MENU_COLOR).convert_alpha()
+        online_play_focused = font_menu_focused.render(GameConfig.START_MENU_OPTION_2_TEXT, True,
+                                                       GameConfig.START_MENU_COLOR).convert_alpha()
+        online_play_button = Button(self._buttons_grp, img=online_play_default,
+                                    focused_img=online_play_focused,
+                                    center=GameConfig.START_MENU_OPTION_2_CENTER)
+        online_play_button.on_mouse_click += self._click_callback_online_match
 
-        _sound_button.on_mouse_enter += lambda: print('enter')
-        _sound_button.on_mouse_leave += lambda: print('leave')
-        _sound_button.on_mouse_click += lambda: print('click')
+        # Entry: Music configuration
+        music_on_default = font_menu_default.render(GameConfig.START_MENU_OPTION_3_DEFAULT_TEXT, True,
+                                                    GameConfig.START_MENU_COLOR).convert_alpha()
+        music_on_focused = font_menu_focused.render(GameConfig.START_MENU_OPTION_3_DEFAULT_TEXT, True,
+                                                    GameConfig.START_MENU_COLOR).convert_alpha()
+        music_off_default = font_menu_default.render(GameConfig.START_MENU_OPTION_3_TOGGLED_TEXT, True,
+                                                     GameConfig.START_MENU_COLOR).convert_alpha()
+        music_off_focused = font_menu_focused.render(GameConfig.START_MENU_OPTION_3_TOGGLED_TEXT, True,
+                                                     GameConfig.START_MENU_COLOR).convert_alpha()
 
+        music_settings_button = ToggleButton(self._buttons_grp, default_img=music_on_default,
+                                             default_focused_img=music_on_focused,
+                                             toggled_img=music_off_default,
+                                             toggled_focused_img=music_off_focused,
+                                             center=GameConfig.START_MENU_OPTION_3_CENTER)
+
+        music_settings_button.on_mouse_click += self._click_callback_music_settings
+
+        # Entry: Quit game
+        quit_game_default = font_menu_default.render(GameConfig.START_MENU_OPTION_4_TEXT, True,
+                                                     GameConfig.START_MENU_COLOR).convert_alpha()
+        quit_game_focused = font_menu_focused.render(GameConfig.START_MENU_OPTION_4_TEXT, True,
+                                                     GameConfig.START_MENU_COLOR).convert_alpha()
+        quit_game_button = Button(self._buttons_grp, img=quit_game_default,
+                                  focused_img=quit_game_focused,
+                                  center=GameConfig.START_MENU_OPTION_4_CENTER)
+        quit_game_button.on_mouse_click += self._click_callback_quit_game
+
+        # Adding ui elements to ui manager to track events
         self._ui_manager.add(self._labels_grp)
         self._ui_manager.add(self._buttons_grp)
+
+    def _click_callback_single_match(self, *args, **kwargs):
+        pass
+
+    def _click_callback_online_match(self, *args, **kwargs):
+        pass
+
+    def _click_callback_music_settings(self, *args, **kwargs):
+        pass
+
+    def _click_callback_quit_game(self, *args, **kwargs):
+        pygame.event.post(GameEvents.QUIT_GAME)

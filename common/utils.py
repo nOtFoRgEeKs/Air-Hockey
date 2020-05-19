@@ -9,7 +9,7 @@ GameClock = pygame.time.Clock()
 
 class GameUtils:
     @staticmethod
-    def game_loop(framerate: int = 30, required_framerate=10):
+    def game_loop(framerate: int, required_framerate: int):
         def game_loop_decorator(func: Callable[..., None]):
             def wrapper(*args, **kwargs):
                 is_running: bool = True

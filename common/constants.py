@@ -18,6 +18,15 @@ class GameColor:
     GRAY_20 = pygame.Color(205, 205, 205)
     GRAY_30 = pygame.Color(180, 180, 180)
     GRAY_40 = pygame.Color(155, 155, 155)
+    GRAY_50 = pygame.Color(125, 125, 125)
+    GRAY_60 = pygame.Color(100, 100, 100)
+    GRAY_70 = pygame.Color(75, 75, 75)
+    GRAY_80 = pygame.Color(50, 50, 50)
+    GRAY_90 = pygame.Color(25, 25, 25)
+
+
+class GameEvents:
+    QUIT_GAME = pygame.event.Event(pygame.QUIT)
 
 
 class GameConfig:
@@ -61,14 +70,24 @@ class GameConfig:
     PUCK_MASS = 100.0
     COLLISION_COEFFICIENT = 0.8
 
-    GAME_LOGO_SIZE = 65
+    GAME_LOGO_SIZE = 35
     GAME_LOGO_TEXT = 'AIR HOCKEY'
     GAME_LOGO_COLOR = GameColor.RED
-    GAME_LOGO_CENTER = Point(228, 100)
+    GAME_LOGO_CENTER = Point(227, 100)
 
-    MENU_DEFAULT_SIZE = 26
-    MENU_FOCUSED_SIZE = 40
-    MENU_COLOR = GameColor.GRAY_40
+    START_MENU_DEFAULT_SIZE = 30
+    START_MENU_FOCUSED_SIZE = 45
+    START_MENU_COLOR = GameColor.GRAY_70
+
+    START_MENU_OPTION_1_TEXT = 'Single Match'
+    START_MENU_OPTION_1_CENTER = Point(227, 400)
+    START_MENU_OPTION_2_TEXT = 'Play Online Match'
+    START_MENU_OPTION_2_CENTER = Point(227, 450)
+    START_MENU_OPTION_3_DEFAULT_TEXT = 'Music: On'
+    START_MENU_OPTION_3_TOGGLED_TEXT = 'Music: Off'
+    START_MENU_OPTION_3_CENTER = Point(227, 500)
+    START_MENU_OPTION_4_TEXT = 'Quit Game'
+    START_MENU_OPTION_4_CENTER = Point(227, 550)
 
 
 class GameConstants:
@@ -81,7 +100,7 @@ class GameConstants:
     PATH_IMAGE_PADDLE = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'paddle.png')
     PATH_IMAGE_PUCK = os.path.join(FOLDER_ASSETS, FOLDER_IMAGES, 'puck.png')
 
-    PATH_FONT_LOGO = os.path.join(FOLDER_ASSETS, FOLDER_FONTS, 'FFF_Tusj.ttf')
+    PATH_FONT_LOGO = os.path.join(FOLDER_ASSETS, FOLDER_FONTS, 'Jelly Crazies.ttf')
     PATH_FONT_MENU = os.path.join(FOLDER_ASSETS, FOLDER_FONTS, 'Amatic-Bold.ttf')
 
 

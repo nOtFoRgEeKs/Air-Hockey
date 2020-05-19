@@ -4,7 +4,7 @@ from assets import AssetManager
 from common import GameConfig, GameUtils, AssetId, GameConstants, GameStateId
 from inputmanager import MouseInput
 from libs import SingletonMeta
-from states import GamePlay, AbstractGameState, StartingMenu, InGame
+from states import GamePlay, StartingMenu, InGame
 
 
 class AirHockeyGame(metaclass=SingletonMeta):
@@ -38,10 +38,9 @@ class AirHockeyGame(metaclass=SingletonMeta):
     @GameUtils.game_loop(framerate=GameConfig.FRAMERATE, required_framerate=GameConfig.REQUIRED_FRAMERATE)
     def play_game(self, *args, **kwargs):
         kwargs['game_window'] = self._game_window
-        _game_state: AbstractGameState = GamePlay.STATE_POOL[GamePlay.CURRENT_STATE]
 
-        _game_state.update(*args, **kwargs)
-        _game_state.render(*args, **kwargs)
+        GamePlay.ACTIVE_STATE.update(*args, **kwargs)
+        GamePlay.ACTIVE_STATE.render(*args, **kwargs)
 
         pygame.display.update()
 
@@ -63,9 +62,9 @@ class AirHockeyGame(metaclass=SingletonMeta):
         AssetManager.set_asset(AssetId.FONT_LOGO,
                                pygame.font.Font(GameConstants.PATH_FONT_LOGO, GameConfig.GAME_LOGO_SIZE))
         AssetManager.set_asset(AssetId.FONT_MENU_DEFAULT,
-                               pygame.font.Font(GameConstants.PATH_FONT_MENU, GameConfig.MENU_DEFAULT_SIZE))
+                               pygame.font.Font(GameConstants.PATH_FONT_MENU, GameConfig.START_MENU_DEFAULT_SIZE))
         AssetManager.set_asset(AssetId.FONT_MENU_FOCUSED,
-                               pygame.font.Font(GameConstants.PATH_FONT_MENU, GameConfig.MENU_FOCUSED_SIZE))
+                               pygame.font.Font(GameConstants.PATH_FONT_MENU, GameConfig.START_MENU_FOCUSED_SIZE))
 
     @staticmethod
     def _initialize_game_states():
