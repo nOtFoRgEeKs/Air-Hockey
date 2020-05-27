@@ -4,12 +4,13 @@ from abc import ABCMeta, abstractmethod
 from collections import deque
 from typing import Dict, Optional
 
+import pygame
+
 from common import GameStateId
-from ui import UIManager
 
 
 class GamePlay:
-    ACTIVE_STATE: Optional[AbstractGameState] = None
+    ACTIVE_STATE: Optional[GameStateId] = None
     PAUSED_STATE_STACK = deque()
     STATE_POOL: Dict[GameStateId, AbstractGameState] = dict()
 
@@ -17,7 +18,7 @@ class GamePlay:
 class AbstractGameState(metaclass=ABCMeta):
 
     def __init__(self):
-        self._ui_manager = UIManager()
+        self._sprites_group = pygame.sprite.Group()
 
     @abstractmethod
     def start(self, *args, **kwargs):

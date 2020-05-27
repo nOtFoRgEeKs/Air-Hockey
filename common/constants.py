@@ -113,10 +113,16 @@ class AssetId(Enum):
     FONT_MENU_DEFAULT = auto()
     FONT_MENU_FOCUSED = auto()
 
+    def __repr__(self) -> str:
+        return self.name
+
 
 class PlayerType(Enum):
     USER = auto()
     OPPONENT = auto()
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class GameStateId(Enum):
@@ -124,3 +130,6 @@ class GameStateId(Enum):
     IN_GAME = auto()
     PAUSE_PAGE = auto()
     WAITING_PLAYER = auto()
+
+    def __repr__(self) -> str:
+        return self.name

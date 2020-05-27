@@ -1,7 +1,7 @@
 import pygame
 
 from assets import AssetManager
-from common import GameConfig, GameUtils, AssetId, GameConstants, GameStateId, GameClock
+from common import GameConfig, GameUtils, AssetId, GameConstants, GameStateId, GameClock, GameEvents
 from inputmanager import MouseInput
 from libs import SingletonMeta
 from states import GamePlay, StartingMenu, InGame
@@ -41,12 +41,21 @@ class AirHockeyGame(metaclass=SingletonMeta):
 
         print('Framerate: ', GameClock.get_fps())
 
-        GamePlay.ACTIVE_STATE.update(*args, **kwargs)
-        GamePlay.ACTIVE_STATE.render(*args, **kwargs)
+        if GamePlay.ACTIVE_STATE:
+            current_state = GamePlay.STATE_POOL[GamePlay.ACTIVE_STATE]
+        elif len(GamePlay.PAUSED_STATE_STACK):
+            current_state = GamePlay.STATE_POOL[GamePlay.PAUSED_STATE_STACK.popleft()]
+        else:
+            pygame.event.post(GameEvents.QUIT_GAME)
+            return
+
+        current_state.update(*args, **kwargs)
+        current_state.render(*args, **kwargs)
 
         pygame.display.update()
 
     def quit_game(self):
+        del self._game_window
         pygame.quit()
 
     @staticmethod

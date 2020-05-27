@@ -12,14 +12,12 @@ class GameUtils:
     def game_loop(framerate: int, required_framerate: int):
         def game_loop_decorator(func: Callable[..., None]):
             def wrapper(*args, **kwargs):
-                is_running: bool = True
-                while is_running:
+                while True:
                     _delta_time = GameClock.tick(framerate)
                     _game_events = pygame.event.get()
                     kwargs['game_events'] = _game_events
-                    for event in _game_events:
-                        if event.type == pygame.QUIT:
-                            is_running = False
+                    if next((True for event in _game_events if event.type == pygame.QUIT), False):
+                        break
                     if _delta_time * required_framerate <= 1000:
                         func(*args, **kwargs)
 

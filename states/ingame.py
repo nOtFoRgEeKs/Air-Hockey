@@ -1,7 +1,7 @@
 import pygame
 
 from assets import AssetManager
-from common import GameConfig, PlayerType, AssetId, GameColor
+from common import GameConfig, PlayerType, AssetId, GameColor, GameStateId
 from inputmanager import MouseInput, AIInput
 from objects import Paddle, Puck
 from states import AbstractGameState, GamePlay
@@ -33,7 +33,7 @@ class InGame(AbstractGameState):
         self._field_image = AssetManager.get_asset(AssetId.IMAGE_FIELD)
 
     def start(self, *args, **kwargs):
-        GamePlay.ACTIVE_STATE = self
+        GamePlay.ACTIVE_STATE = GameStateId.IN_GAME
 
     def pause(self, *args, **kwargs):
         pass
